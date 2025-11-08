@@ -84,6 +84,58 @@ and we'll say   dot web, is the package that we use
 
 again, Annotate immediately, using @Controller  :)
 
+TP could've made this a restController, but i want to bake in some UI stuff here, cuz TP wants to keep on building what we have touched on in prior vids, with respect to Frontend & whatnot ... ummm, templates, etcetcetc ...
+
+so, UserController
+
+    at GetMapping, let's say slash users
+now, this is typical endpoint for ...
+uh, when we see slash users, with a GetMapping ... any ...
+any name domain Object with an  ~ s ~, would imply that we're finding / getting All the users - that's what it implies
+
+so this is like a get all users method: @GetMapping("/users")
+so this is a get all users method
+
+so let's do that, let's continue ...
+
+    public List<User>  ...  sorry, no, should be
+    public String<User> cuz we have a regular Controller annotated ...
+
+NOTE:   use List<User> if annotation is @RestController, as this is for 'views'
+        use String<User> if annotation is @Controller
+
+so to use a String, we'd have to map that to a template, which is just an html file, and we'll call this getAllUsers () {   doesn't matter what we call it, but we'll call it that
+
+we will need to inject a (ModelMap model) {
+    and inside of here, we can say model.put, and we'll put the "users", into the model, which is users);
+
+but there are no users yet, so how do we populate this with the value ...
+well, we bring in ... we @Autowired in our Service, like so ...
+    @Autowired
+    private UserService userService;
+
+remember - Controller talks to Services
+           Service talks to Repositories
+
+then where (ModelMap model) {   ends, we need to find what now ...
+we need to findAll ... userService.findAll();  // we want to get ALL of the users, which is a List of <User> users, which we'll call the variable that we use within this line here, which is ~ users ~
+
+so ... List of users, put that onto the model,
+and then we'll return the views, we'll call it "users";   will be the view
+which implies that we need a template ...
+
+so, in our src --> resources, template folder - this is where we get the views, so we need to create a user.html file
+in other words, we need an html file that matches what we're returning, which is ~ user ~
+
+to reiterate, our new html file is named users.html cuz we're returning "users" from our @Controller
+
+
+
+
+
+
+
+
 
 
 
