@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http:thymeLeaf.org">
+    <head>
+        <title>Users</title>
+    </head>
+    <body>
+        <h1>Users</h1>
+
+        <div th:each="user : ${users}">
+            <span th:text="${user.userid}"></span><br/>
+            <span th:text="${user.username}"></span><br/>
+            <span th:text="${user.name}"></span><br/>
+            <span th:text="${user.password}"></span><br/>
+            <hr/>
+        </div>
+    </body>
+</html>
+

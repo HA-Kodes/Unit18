@@ -1,0 +1,233 @@
+in this vid03, we're going to be looking at the data we get back
+so the data we get back, when localhost:8080/users is fetched from the browser,
+it display the following:
+Users - as tagged <h1>Users</h1> of our users.html file
+
+bianconi@justabyte.com  \   as scripted
+service@netflix.com     /   in our Workbench
+
+and inside of our view (of users.html file <span ... ) ...
+and we can start to actually break down & see exactly all the details that we are getting
+... refer to users.html file for updated tags ...
+SAVE file
+then go back to browser & hit refresh ...
+but <hr/> (horizontal break) did not work - i fails ...
+here's why ...
+
+so there's another setting ... a thymeleaf setting that is used to disable cache
+ -->    spring.thymeleaf.cache = false  <--
+ insert that setting into our application.properties
+ in order for
+
+cuz currently, it was cache the browser
+and that's why refreshing the browser did not show our updated html file, with
+that <hr/> tag that we've added
+
+REBOOT server to make sure this setting gets picked up to execute
+we can disable cache, so that we don't need to constantly reboot our server
+everytime we make a change to our plain old html file
+
+upon refreshing the browser, the following gets displayed:
+Users - as tagged <h1>Users</h1> of our users.html file
+
+1
+bianconi@justabyte.com  \   as scripted
+Bianconi Ha
+root
+___________________________________________________
+1
+service@netflix.com     /   in our Workbench
+Manager
+root
+
+so we're actually getting ALL the details from our Workbench/database
+
+so in order to READ, this is the part of the 'R' in CRUD ...
+Reading the data, all it took was implementing a UserRepository interface
+extending JpaRepository, then passing in these two details <User, Long> {
+User = data type of the Table that we're reading from
+Long = data type of the ID, the Primary Key of that Table
+
+refer to UserRepository.java class for a refresher
+
+with that repository in place, we then leverage that repository code,
+by saying userRepo.findAll(); in our UserService.java class
+which is the Repository interface
+which will create a concrete class
+such that we can actually use the concrete class here: ... userRepo.findAll();
+
+and .findAll  will find ALL the records from the database
+then we return that to our UserController.java class, & put it on a map & BOOM
+it pops up in our browser   localhost:8080/users
+
+what we can also do to elaborate on this, our UserService.java class,
+is ... what if we have a method to find one?!
+and we can find it by, maybe, an ID, let's say
+we can pass in the userId, as a parameter
+and we could return -->     userRepo.    there are 33 methods to choose from
+notice: getOne and findOne ... there's a difference (read explanations)
+
+in a nutshell, the getOne(Long Id) might throw an exception
+if it doesn't find a corresponding row
+whereas the findOne(Example<S> example) : Optional<S> - QueryByExampleExecutor
+this method doesn't do that, it returns an actual Entity or null, if none was found
+
+saying, 'findOne'  is slightly friendlier
+the difference is 'findOne' returns an optional
+it doesn't actually return a user value - it returns an Optional
+
+so what we need to do then is we need to leverage this userRepo.findOn(userId);
+
+... wait a second ... CORRECTION:
+it's the findById, that's what we want to leverage
+findById returns an Optional of users, so we can say, 'userOpt', like so
+
+    public user findOne(Long userId) {
+        Optional<User> useropt = userRepo.findById(userId);
+        return null;
+    }
+
+so it will return an optional of user: Optional<User>
+has an optional wrap around the user class: userOpt
+and it uses this: userRepo.findById(userId);
+
+in other words, if we pass an 'userId' that doesn't exist
+for instance, userId 1 and 2 exist, but if it's 101, what it would do is
+it would return an empty optional wrapper ...
+so instead of null, what we could do is: return userOpt.orElse(other);
+or else is what will be returned, when none is found, basically
+we could also return a blank new user object: return userOpt.orElse(new User());
+that could be a reasonable response
+that way we don't run into a possible null pointer exception
+we'd just return a blank new User()  (object), if none is found
+
+now, for the findOne(Long userId) {  on line 21 of our UserService.java class
+we need to map this as well
+so we'll add this in our UserController.java class
+and add another @GetMapping, where we pass in ("/users/{userId}") as a path variable
+so this is another common thing that we see
+we can say, getOneUser, for instance (ModelMap model, @PathVariable ...
+and @PathVariable is a Long datatype, and it's going to be called UserId) {
+
+    public String getOneUser (ModelMap model, @PathVariable Long userId) {
+
+the last 'userId' on line 112 above, at the @PathVariable name,
+needs to match the 'userId' in @GetMapping
+these two need to be identical for it to work, okay
+
+now, remember, we've just created a method in the UserService.java class
+so, we to call on that method inside our UserController.java class
+
+    userService.findOne(userId); ...
+
+and what it wants is an input of a userId value,
+which we're getting from the @PathVariable name userId
+
+so now what we can do is assign this to a variable, and call it 'user'
+to line 121 above:  User user = userService.findOne(userId);
+and we'll put that in our model, cuz the model is already reading 'users', right!
+
+so we'll say 'model.put("users",
+so we'll put the Key users on the model, but then we'll do is ...
+we'll say 'Arrays.asList(user)) ...
+we'll return a new list, if you will, of just that single user
+
+so an 'Arrays.asList' will return a List of user Objects with whatever user we put into it
+and we're only putting one user, in essence, ours is a List of just one user
+the reason why this is done is we need to make sure
+that we don't have to change the code on the Frontend
+cuz the Frontend is iterating through a users Key
+
+and then we just 'return "users";'
+and this should work
+
+the difference is that
+instead of 'using userService.findAll();'   (line 22 of UserController.java class)
+we're saying 'userService.findOne(userId);' (line 29 of UserController.java class)
+and we're just finding one user,
+based on the '{userId}' that we passed in to the URL of @GetMapping (line 27 of UserController.java class)
+
+so if we go to the browser / URL and we type in
+localhost:8080/users    it returns all users
+localhost:8080/users/1  it returns the first user of that Key
+localhost:8080/users/2  it returns the second user of that Key
+localhost:8080/users/3  it does not crash, instead, just a blank user
+cuz what we did was we return a new user blank object (as noted on line 94 thru 102 above)
+blank userId
+blank userName
+blank userPassword
+blank name
+... and that's how the browser / URL returns 4 blank spaces before a <hr/>
+--------------------------------------------------------------------------
+
+not the greatest functionality
+at least it didn't crash
+
+that is how we are able to leverage,
+not just findAll,
+but findOne as well
+
+findOne, which is findById
+and to be consistent, let's rename that method (in our UserService.java class)
+just to eliminate any confusion, on line 21, replace 'findOne' with 'findById'
+hover over the word `findOne`, do an alt + r (for refactor), select rename
+
+findById is what defined in SpringFramework Data JpaRepository
+which returns as an Optional<User>
+
+so there we go, we've just built in some methods that we can use
+to leverage to our advantage
+actually not have to write any SQL scripts ourselves
+
+so, from here, where do we go?
+let's think on this ...
+let's think on what makes sense logically for the next step
+we could look at how to create data next ...
+maybe that makes the most sense ... learning how to create data ...
+yea, let's go thru the C.R.U.D.
+so next, we'll go thru how to Create data
+already done our Read ... some of it anyway ... there's more to Reading data,
+alot more functionalities that we haven't gotten into
+and there might be questions like:
+how do we search by userName, instead of Id ... how do we do that?
+we'll go indepth,
+but for now, let's switch gear and talk about:
+Creating data
+Updating data
+as these go hand-in-hand
+and then we'll cover the Deleting data
+then jump back into other ways of Reading data from our database
+using some fancy stuff from Springframework Data Jpa
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
