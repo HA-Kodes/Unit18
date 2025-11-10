@@ -38,7 +38,7 @@ public class UserController {
 //		List<User> users = userService.findByUsername("trevor@craftycodr.com");
 //		List<User> users = userService.findByNameAndUsername("Trevor Page2", "trevor@craftycodr.com");
 //		List<User> users = userService.findByCreatedDateBetween(LocalDate.of(2020, 1, 2), LocalDate.of(2020, 1, 3));
-		List<User> users = userService.findAll();
+        List<User> users = userService.findAll();
 
 		model.put("users", users);
 		if (users.size() == 1) {
@@ -50,7 +50,8 @@ public class UserController {
 
     @GetMapping("/users/{userId}")
     public String getOneUser (ModelMap model, @PathVariable Long userId) {
-        User user = userService.findById(userId);
+        User user = userService.findExactlyOneUserByUsername("trevor@craftycodr.com");
+//      User user = userService.findById(userId);
         model.put("users", Arrays.asList(user));
         model.put("user", user);
         return "users";
