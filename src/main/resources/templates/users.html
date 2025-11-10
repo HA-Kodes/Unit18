@@ -15,7 +15,7 @@
         <div><input type="submit" value="Create Account"/></div>
     </form>
     <form th:action="@/user/{userId}/delete(userId=${user.userId})}" method="post">
-        <input type="submit" value="Delete User Account" />
+        <input type="submit" value="Delete User Account"/>
     </form>
 </div>
 
@@ -23,7 +23,10 @@
     <span th:text="${user.userid}"></span><br/>
     <span th:text="${user.username}"></span><br/>
     <span th:text="${user.name}"></span><br/>
-    <span th:text="${user.password}"></span><br/>
+    <span th:text="${user.password}"></span>
+        <div th:each="account : ${user.accounts}">
+            <span th:text="${account.accountName}"></span>
+        </div>
     <hr/>
 </div>
 </body>
