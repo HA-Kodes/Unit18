@@ -14,6 +14,9 @@
         <div>Full Name: <input type="text" th:field="${user.name}"/></div>
         <div><input type="submit" value="Create Account"/></div>
     </form>
+    <form th:action="@/user/{userId}/delete(userId=${user.userId})}" method="post">
+        <input type="submit" value="Delete User Account" />
+    </form>
 </div>
 
 <div th:unless="${Lists.size(users == 1}" th:each="user : ${users}">
