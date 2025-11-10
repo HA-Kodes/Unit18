@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface UserRepository extends JpaRepository <User, Long> {
@@ -25,5 +26,10 @@ public interface UserRepository extends JpaRepository <User, Long> {
 
     @Query("select u from User u where username = :username")
     List<User> findExactlyOneUserByUsername(String username);
+
+    @Query("select u from User u"
+            + " left join fetch u.accounts"
+            + " left join fetch u.address")
+    Set<User> findAllUsersWithAccountsAndAddresses();
 
 }
