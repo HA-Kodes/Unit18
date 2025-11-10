@@ -1,18 +1,28 @@
 <!DOCTYPE html>
 <html xmlns:th="http:thymeLeaf.org">
-    <head>
-        <title>Users</title>
-    </head>
-    <body>
-        <h1>Users</h1>
+<head>
+    <title>Users</title>
+</head>
+<body>
+<h1>Users</h1>
 
-        <div th:each="user : ${users}">
-            <span th:text="${user.userid}"></span><br/>
-            <span th:text="${user.username}"></span><br/>
-            <span th:text="${user.name}"></span><br/>
-            <span th:text="${user.password}"></span><br/>
-            <hr/>
-        </div>
-    </body>
+<div th:if="${#Lists.size(users) == 1}">
+    test!
+    <form action="" method="post">
+        <div>Username: <input type="text" th:field="${user.username}"/></div>
+        <div>Password: <input type="password" th:field="${user.password}"/></div>
+        <div>Full Name: <input type="text" th:field="${user.name}"/></div>
+        <div><input type="submit" value="Create Account"/></div>
+    </form>
+</div>
+
+<div th:unless="${Lists.size(users == 1}" th:each="user : ${users}">
+    <span th:text="${user.userid}"></span><br/>
+    <span th:text="${user.username}"></span><br/>
+    <span th:text="${user.name}"></span><br/>
+    <span th:text="${user.password}"></span><br/>
+    <hr/>
+</div>
+</body>
 </html>
 
