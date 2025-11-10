@@ -2,6 +2,7 @@ package com.coderscampus.domain;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,7 @@ public class User {
 	private String username;
 	private String password;
 	private String name;
+	private LocalDate createdDate;
 	private List<Account> accounts = new ArrayList<>();
 	private Address address;
 
@@ -66,6 +68,7 @@ public class User {
 				", username='" + username + '\'' +
 				", password='" + password + '\'' +
 				", name='" + name + '\'' +
+				", createdDate=" + createdDate +
 				", accounts=" + accounts +
 				", address=" + address +
 				'}';
