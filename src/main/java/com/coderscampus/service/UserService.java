@@ -1,7 +1,10 @@
 package com.coderscampus.service;
 
+import com.coderscampus.domain.Account;
 import com.coderscampus.domain.User;
+import com.coderscampus.repository.AccountRepository;
 import com.coderscampus.repository.UserRepository;
+import org.antlr.v4.runtime.misc.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +18,7 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepo;
+    private AccountRepository accountRepo;
 
     public List<User> findByUsername(String username) {
         return userRepo.findByUsername(username);
@@ -47,6 +51,19 @@ public class UserService {
     }
 
     public User saveUser(User user) {
+        if (user.getUserId() == null) {
+            Account checking = new Account();
+            checking.setAccountName("Checking Account");
+            checking.getUsers().add(user);
+            Account savings = new Account();
+            savings.setAccountName("Savings Account");
+            savings.getUsers().add(user);
+
+            user.getAccounts().add(checking);
+            user.getAccounts().add(savings);
+            accountRepo.save(checking);
+            accountRepo.save(savings);
+        }
         return userRepo.save(user);
     }
 
