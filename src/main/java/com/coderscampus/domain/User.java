@@ -54,7 +54,9 @@ public class User {
 	public void setAccounts(List<Account> accounts) {
 		this.accounts = accounts;
 	}
-	@OneToOne(mappedBy = "user")
+//	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL} // NOT ADVISABLE, there's an issue with n:n & more things might get removed than wanted
+	@OneToOne(mappedBy = "user", cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE},
+	orphanRemoval = true)
 	public Address getAddress() {
 		return address;
 	}

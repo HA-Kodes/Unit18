@@ -1,6 +1,7 @@
 package com.coderscampus.service;
 
 import com.coderscampus.domain.Account;
+import com.coderscampus.domain.Address;
 import com.coderscampus.domain.User;
 import com.coderscampus.repository.AccountRepository;
 import com.coderscampus.repository.UserRepository;
@@ -64,7 +65,29 @@ public class UserService {
             accountRepo.save(checking);
             accountRepo.save(savings);
         }
-        return userRepo.save(user);
+        findById(user.getUserId());
+        // BELOW IS ONLY FOR DEMONSTRATION - NOT GOOD PRODUCTION CODE:
+        // CASCADE TYPES:
+        // PERSIST, MERGE, REMOVE
+        // PERSIST new User() <-> new Address() --> saveUser()
+        // MERGE existingUser -> new/updating Address() --> saveUser()
+        // REMOVE   existingUser -> setAddress(null) --> saveUser()
+//        if (user.getAddress() == null) {
+//            Address address = new Address();
+//            address.setAddressLine1("123 Fake St");
+//            address.setAddressLine2("Unit 4");
+//            address.setCity("Some City");
+//            address.setCountry("Some Country");
+//            address.setRegion("Some Region");
+//            address.setZipCode("12345");
+//            address.setUser(user);
+//            address.setUserId(user.getUserId());
+//            user.setAddress(address);  // set address back onto user - parent goes to child; child goes to parent
+//
+//        }   else {    // no need for this statement, as line 75 is already null, meaning, if there is no address
+//            user.setAddress(null);
+//        }
+        return userRepo.save(user);  // save the parent Object ... better way to save when using Cascade
     }
 
     public void delete(Long userId) {
